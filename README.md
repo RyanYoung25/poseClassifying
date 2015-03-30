@@ -13,7 +13,7 @@ Dependencies
 
 This project will require a few dependencies:
 
--MAESTOR
--OpenNi ROS package
--OpenNi_tracker ros package
--Scikit-learn
+- MAESTOR
+- OpenNi ROS package
+- OpenNi_tracker ros package
+- Scikit-learn
