@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-from kinect import Kinect
-from datetime import datetime
-import sys
-import time
 import json
 
+#Takes a tuple from the kinect data and makes it a json string. 
+#Most of the things I wrote to process the data assumes it will be in this format. 
 def jsonMaker(tup):
     dict = {
             "Time" : tup[0],
@@ -27,29 +25,5 @@ def jsonMaker(tup):
             ]
     }
 
-    return json.dumps(dict)
+    return json.dumps(dict)    
 
-
-def main():
-    f = open("PositionsChkn.log", "w")
-
-    user = 1
-    if len(sys.argv) == 2:
-        user = int(sys.argv[1])
-    print "sleeping"
-    time.sleep(7)
-    user1 = Kinect(user=user)
-    for i in range(0, 1000):
-        val =  user1.get_posture()
-        if val != None:
-            tup = (str(datetime.now().time()),  val)
-            newLine = jsonMaker(tup)
-            print newLine
-            f.write(str(newLine) + "\n")
-        time.sleep(.03) 
-    f.close() 
-    
-
-
-if __name__ == '__main__':
-    main()
