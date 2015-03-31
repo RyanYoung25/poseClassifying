@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 
 from sklearn.ensemble import RandomForestClassifier
-import cPickle
+from sklearn.externals import joblib
 
 #Global random forest classifier object
 rfc = None
-threshold = 40
+threshold = .80
 
 
 def loadClassifier():
     #Update the global rfc with the forest that was pickled
     global rfc
 
-    fIn = open("classifier.pkl", "rb")
-    rfc = cPickle.load(fIn)
+    rfc = joblib.load("./classifier/classifier.pkl")
 
 def classifySample(sample):
     #Take a sample and try to classify it
@@ -27,8 +26,9 @@ def classifySample(sample):
     #Calculate the predicted gesture and the probability
     pred = rfc.predict(sample)
     probs = rfc.predict_proba(sample)
-    maxProb = max(probs)
-
+    print probs
+    maxProb = max(probs[0])
+    print maxProb
     #Reject if the probability is less than the threshold
     if maxProb < threshold:
         print "Not a gesture I know"

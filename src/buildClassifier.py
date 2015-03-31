@@ -2,9 +2,7 @@
 
 from sklearn.ensemble import RandomForestClassifier
 from AngleCalculator import generateAngles
-from MakeData import returnLine
-import copy
-import cPickle
+from sklearn.externals import joblib
 #Author: Ryan Young
 
 #An array of all the files containing data and an array of the labels for each file 
@@ -65,12 +63,11 @@ def CreateRandomForestClassifier():
     rfc = RandomForestClassifier(n_estimators=100)
     rfc = rfc.fit(XTrain, yTrain)
 
-    print "Pickling the classifier in classifier.pkl"
-    f = open("classifier.pkl", 'wb')
+    print "saving the classifier in classifier.pkl"
 
     #Pickle the classifier
-    cPickle.dump(rfc, f)
-    f.close()
+    joblib.dump(rfc, "./classifier/classifier.pkl")
+    
 
 
 if __name__ == '__main__':

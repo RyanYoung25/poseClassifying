@@ -1,6 +1,7 @@
-import Kinect
+#!/usr/bin/env python
+from kinect import Kinect
 from jsonConverter import jsonMaker
-import datetime
+from datetime import datetime
 import time
 import sys
 
@@ -13,9 +14,9 @@ def main():
 
     for dance in dances:
         filename = dance + str(personNum) + ".log"
-        print "The next dance that will be recored is: " + dance
-        print "The data will be stored in the file: " + filename
-        print "The user being recorded is: " + user
+        print "The next dance that will be recored is: " + str(dance)
+        print "The data will be stored in the file: " + str(filename)
+        print "The user being recorded is: " + str(user)
         print "Press enter when ready to record..."
         raw_input("")
 
