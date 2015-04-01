@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
 import sys
+import os
 from kinect import Kinect
 from AngleCalculator import generateAngles
 from useClassifier import *
 import time
 from datetime import datetime
 from jsonConverter import jsonMaker
+from multiprocessing import Process, Manager
 #Include the dances
 from dances.Maestor import maestor
 from dances.ChickenDance import chickenDanceRobot
@@ -16,10 +18,10 @@ from dances.YMCA import doTheYMCARobot
 
 
 loadClassifier()
-user = Kinect(user=1)
 
 #Get the current gesture happening and classify it. Then print the result
-def classifyCurrentGesture():
+def classifyCurrentGesture(d):
+    user = Kinect(user=1)
     goodString = None
     while goodString is None:
         val =  user.get_posture()
@@ -29,23 +31,32 @@ def classifyCurrentGesture():
         time.sleep(.25) 
 
     angles = generateAngles(goodString)
-    result = classifySample(angles)
+    classList = classifySample(angles)
+    theDance = ""
+    if len(classList) != 0:
+        theDance = classList[0]
+    #d[0] = 1
+    f = open(".tmp.val", "w")
+    f.write(theDance)
+    f.close()
 
-    return result
 
-def respondDance(robot):
+def respondDance(res):
     #Switch on the result of the dance pose classificaiton
     #and perform an appropriate dance in response.
-    result = classifyCurrentGesture()
-    ["Disco", "ChickenDance", "WalkLikeAnEgyptian", "YMCA"]
-
-    if result is "Disco":
+    robot = maestor()
+    f = open(".tmp.val", "r")
+    line = f.readline()
+    result = line
+    f.close()
+    print result
+    if result == "Disco":
         stayAliveRobot(robot)
-    elif result is "ChickenDance":
+    elif result == "ChickenDance":
         chickenDanceRobot(robot)
-    elif result is "WalkLikeAnEgyptian":
+    elif result == "WalkLikeAnEgyptian":
         walkLikeAnEgyptianRobot(robot)
-    elif result is "YMCA":
+    elif result == "YMCA":
         doTheYMCARobot(robot)
     else:
         print "No dance recognized"
@@ -55,7 +66,9 @@ def respondDance(robot):
 
 def main():
     keepGoing = True
-    robot = maestor()
+    manager = Manager()
+    d = manager.dict()
+    d['a'] = ""
     while keepGoing:
         print "Enter q to quit"
         print "Enter anything else to recognize and dance"
@@ -63,7 +76,14 @@ def main():
         if result is "q":
             keepGoing = False
             continue
-        respondDance(robot)
+        p1 = Process(target=classifyCurrentGesture, args=(d,))
+        p2 = Process(target=respondDance, args=(d,))
+        p1.start()
+        p1.join()
+        print d
+        p2.start()
+        p2.join()
 
 if __name__ == '__main__':
     main()
+    os.remove(".tmp.val")

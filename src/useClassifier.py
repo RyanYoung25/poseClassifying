@@ -26,9 +26,7 @@ def classifySample(sample):
     #Calculate the predicted gesture and the probability
     pred = rfc.predict(sample)
     probs = rfc.predict_proba(sample)
-    print probs
     maxProb = max(probs[0])
-    print maxProb
     #Reject if the probability is less than the threshold
     if maxProb < threshold:
         print "Not a gesture I know"
